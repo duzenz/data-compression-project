@@ -1,102 +1,88 @@
 from collections import Counter
- 
-def cumulative_freq(freq):
-    cf = {}
-    total = 0
-    for b in range(256):
-        if b in freq:
-            cf[b] = total
-            total += freq[b]
-    return cf
- 
-def arithmethic_coding(bytes, radix):
- 
-    # The frequency characters
-    freq = Counter(bytes)
- 
-    # The cumulative frequency table
-    cf = cumulative_freq(freq)
- 
-    # Base
-    base = len(bytes)
- 
+
+radix = 10  # can be any integer greater or equal with 2
+
+
+def arithmetic_coding(byte_of_str):
+    # Karakterleri frekans dizisine dönüştür
+    frequency = Counter(byte_of_str)
+
+    frequency_table = get_cumulative_frequency_table(frequency)
+
+    base_length = len(byte_of_str)
+
     # Lower bound
-    lower = 0
- 
+    lower_limit = 0
+
     # Product of all frequencies
-    pf = 1
- 
+    multiply_frequency = 1
+
     # Each term is multiplied by the product of the
     # frequencies of all previously occurring symbols
-    for b in bytes:
-        lower = lower*base + cf[b]*pf
-        pf *= freq[b]
- 
-    # Upper bound
-    upper = lower+pf
- 
-    pow = 0
+    for b in byte_of_str:
+        lower_limit = lower_limit * base_length + frequency_table[b] * multiply_frequency
+        multiply_frequency *= frequency[b]
+
+    upper_limit = lower_limit + multiply_frequency
+
+    power = 0
     while True:
-        pf //= radix
-        if pf==0: break
-        pow += 1
- 
-    enc = (upper-1) // radix**pow
-    return enc, pow, freq
- 
-def arithmethic_decoding(enc, radix, pow, freq):
- 
-    # Multiply enc by radix^pow
-    enc *= radix**pow;
- 
-    # Base
-    base = sum(freq.values())
- 
+        # floor division
+        multiply_frequency //= radix
+        if multiply_frequency == 0:
+            break
+        power += 1
+
+    encrypted = (upper_limit - 1) // radix ** power
+    return encrypted, power, frequency
+
+
+def arithmetic_decoding(encrypted, power, frequency):
+    encrypted *= radix ** power
+    base_length = sum(frequency.values())
+
     # Create the cumulative frequency table
-    cf = cumulative_freq(freq)
- 
+    frequency_table = get_cumulative_frequency_table(frequency)
+
     # Create the dictionary
-    dict = {}
-    for k,v in cf.items():
-        dict[v] = k
- 
+    dictionary = {}
+    for key, value in frequency_table.items():
+        dictionary[value] = key
+
     # Fill the gaps in the dictionary
-    lchar = None
-    for i in range(base):
-        if i in dict:
-            lchar = dict[i]
-        elif lchar is not None:
-            dict[i] = lchar
- 
+    gap_char = None
+    for i in range(base_length):
+        if i in dictionary:
+            gap_char = dictionary[i]
+        elif gap_char is not None:
+            dictionary[i] = gap_char
+
     # Decode the input number
     decoded = bytearray()
-    for i in range(base-1, -1, -1):
-        pow = base**i
-        div = enc//pow
- 
-        c  = dict[div]
-        fv = freq[c]
-        cv = cf[c]
- 
-        rem = (enc - pow*cv) // fv
- 
-        enc = rem
-        decoded.append(c)
- 
-    # Return the decoded output
-    return bytes(decoded)
- 
-radix = 10      # can be any integer greater or equal with 2
- 
-for str in b'DABDDB DABDDBBDDBA ABRACADABRA TOBEORNOTTOBEORTOBEORNOT'.split():
-    print(str)
-    enc, pow, freq = arithmethic_coding(str, radix)
-    dec = arithmethic_decoding(enc, radix, pow, freq)
- 
-    print("%-25s=> %19s * %d^%s" % (str, enc, radix, pow))
- 
-    if str != dec:
-    	raise Exception("\tHowever that is incorrect!")
+    for i in range(base_length - 1, -1, -1):
+        power = base_length ** i
+        division = encrypted // power
 
-enc, pow, freq = arithmethic_coding(b'FATIMAH AS', radix)
-print(enc)
+        char = dictionary[division]
+        frequency_value = frequency[char]
+        char_value = frequency_table[char]
+
+        rem = (encrypted - power * char_value) // frequency_value
+
+        encrypted = rem
+        decoded.append(char)
+
+    # Return the decoded string
+    return bytes(decoded)
+
+
+def get_cumulative_frequency_table(frequency):
+    cumulative_frequency_table = {}
+    total = 0
+    for char_byte in range(256):
+        if char_byte in frequency:
+            cumulative_frequency_table[char_byte] = total
+            total += frequency[char_byte]
+    return cumulative_frequency_table
+
+
