@@ -8,7 +8,6 @@ class BurrowsWheelerTransform:
         last_column = [row[-1:] for row in table]  # Last characters of each row
         return "".join(last_column)  # Convert list of characters into string
 
-
     def inverse_burrows_wheeler_transform(self, string_to_inverse_transform):
         table = [""] * len(string_to_inverse_transform)  # Make empty table
         for i in range(len(string_to_inverse_transform)):
