@@ -1,7 +1,6 @@
 from __future__ import print_function
-from string import ascii_lowercase
 
-SYMBOL_TABLE = list(ascii_lowercase)
+SYMBOL_TABLE = list("0123456789abcdefghijklmnopqrstwvuxyzABCDEFGHIJKLMNOPQRSTWVUXYZ,. \t\n[]")
 
 
 class MoveToFront:
