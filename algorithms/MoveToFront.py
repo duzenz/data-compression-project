@@ -5,17 +5,17 @@ SYMBOL_TABLE = list("0123456789abcdefghijklmnopqrstwvuxyzABCDEFGHIJKLMNOPQRSTWVU
 
 class MoveToFront:
 
-    def move_to_front_code(self, text):
-        sequence, pad = [], SYMBOL_TABLE[::]
+    def code(self, text):
+        transformed_array, pad = [], SYMBOL_TABLE[::]
         for char in text:
             index = pad.index(char)
-            sequence.append(index)
+            transformed_array.append(index)
             pad = [pad.pop(index)] + pad
-        return sequence
+        return transformed_array
 
-    def move_to_front_decode(self, sequence):
+    def decode(self, transformed_array):
         chars, pad = [], SYMBOL_TABLE[::]
-        for index in sequence:
+        for index in transformed_array:
             char = pad[index]
             chars.append(char)
             pad = [pad.pop(index)] + pad
