@@ -1,9 +1,9 @@
 import contextlib
-from algorithms.arithmeticcoding import SimpleFrequencyTable
-from algorithms.arithmeticcoding import ArithmeticEncoder
-from algorithms.arithmeticcoding import ArithmeticDecoder
-from algorithms.arithmeticcoding import BitOutputStream
-from algorithms.arithmeticcoding import BitInputStream
+from algorithms.ArithmeticCoding import SimpleFrequencyTable
+from algorithms.ArithmeticCoding import ArithmeticEncoder
+from algorithms.ArithmeticCoding import ArithmeticDecoder
+from algorithms.ArithmeticCoding import BitOutputStream
+from algorithms.ArithmeticCoding import BitInputStream
 
 WINDOWS_LINE_ENDING = b'\r\n'
 UNIX_LINE_ENDING = b'\n'
